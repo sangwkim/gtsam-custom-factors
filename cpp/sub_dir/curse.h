@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace gtsam_example {
+namespace gtsam_packing {
 
 class Curse {
  public:

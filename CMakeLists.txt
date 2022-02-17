@@ -5,7 +5,7 @@
 # * 1. To create your own project, replace "gtsam_example" with the actual name
 #   of your project
 cmake_minimum_required(VERSION 3.9)
-project(gtsam_example CXX C)
+project(gtsam_packing CXX C)
 set(CXX_STANDARD 11)
 
 # ##############################################################################
@@ -24,8 +24,7 @@ include_directories(BEFORE "${PROJECT_SOURCE_DIR}")
 # ##############################################################################
 # * 4. Build static library from common sources. This is a common cmake step
 #   where we load all the source files and link against the GTSAM library.
-add_library(${PROJECT_NAME} SHARED cpp/greeting.h cpp/greeting.cpp
-                                   cpp/sub_dir/curse.h cpp/sub_dir/curse.cpp)
+add_library(${PROJECT_NAME} SHARED cpp/BetweenFactorPose3_.h cpp/InequalityFactor.h cpp/StiffnessFactor.h cpp/StiffnessRatioFactor.h cpp/CoulombFactor.h cpp/CoulombFactor2.h cpp/LenSlipFactor.h cpp/LenPenFactor.h cpp/LenPenFactor_2.h cpp/EnergyWFFactor.h cpp/EnergyWOFFactor.h cpp/ConsistentDeformFactor.h cpp/ContactMotionFactor.h cpp/PoseOdometryFactor.h cpp/PenetrationFactor.h cpp/PenetrationFactor_2.h cpp/ClineCenterFactor.h cpp/StickingContactFactor_3D.h cpp/FixedRotationFactor.h cpp/StickingContactFactor.h cpp/ContactLineParallelFactor.h cpp/TactileTransformFactor_3D.h cpp/ContactPlaneFactor_3D.h cpp/AlignFactor.h cpp/PhysicsFactor_v2_2.h cpp/PhysicsFactor_v3.h cpp/InsideFrictionConeFactor.h cpp/FrictionConeFactor.h cpp/PhysicsFactor_v2.h cpp/PhysicsFactor.h cpp/ContactPlaneFactor.h cpp/TactileTransformFactor.h cpp/GPSPose2Factor.h cpp/greeting.h cpp/greeting.cpp)
 target_link_libraries(${PROJECT_NAME} gtsam)
 
 # ##############################################################################

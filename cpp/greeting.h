@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace gtsam_example {
+namespace gtsam_packing {
 
 class Greeting {
   std::vector<std::string> names_;

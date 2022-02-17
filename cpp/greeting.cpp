@@ -1,6 +1,6 @@
 #include "greeting.h"
 
-namespace gtsam_example {
+namespace gtsam_packing {
 
 /// Print a greeting
 void Greeting::sayHello() const {
