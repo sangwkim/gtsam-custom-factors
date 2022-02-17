@@ -31,26 +31,26 @@ public:
       typename gtsam::traits<gtsam::Pose3>::ChartJacobian::Jacobian H24;
       gtsam::Pose3 hx = gtsam::traits<gtsam::Pose3>::Between(p3_1,p4_2,&H13,&H24);
       if (zj==true) {
-        if (H1) *H1 = gtsam::Matrix66::Zero();
         if (H3) *H3 = gtsam::Matrix66::Zero();
+        if (H4) *H4 = gtsam::Matrix66::Zero();
       } else {
-        if (H1) *H1 = H13 * (*H1);
         if (H3) *H3 = H13 * (*H3);  
+        if (H4) *H4 = H24 * (*H4);
       }
+      if (H1) *H1 = H13 * (*H1);
       if (H2) *H2 = H24 * (*H2);
-      if (H4) *H4 = H24 * (*H4);
 #ifdef SLOW_BUT_CORRECT_BETWEENFACTOR
       typename gtsam::traits<gtsam::Pose3>::ChartJacobian::Jacobian Hlocal;
       gtsam::Vector rval = gtsam::traits<gtsam::Pose3>::Local(measured_, hx, boost::none, (H1 || H2 || H3 || H4) ? &Hlocal : 0);
       if (zj==true) {
-        if (H1) *H1 = gtsam::Matrix66::Zero();
         if (H3) *H3 = gtsam::Matrix66::Zero();
+        if (H4) *H4 = gtsam::Matrix66::Zero();
       } else {
-        if (H1) *H1 = Hlocal * (*H1);
         if (H3) *H3 = Hlocal * (*H3);
+        if (H4) *H4 = Hlocal * (*H4);
       }      
+      if (H1) *H1 = Hlocal * (*H1);
       if (H2) *H2 = Hlocal * (*H2);
-      if (H4) *H4 = Hlocal * (*H4);
       return rval
 #else
       return gtsam::traits<gtsam::Pose3>::Local(measured_, hx);
