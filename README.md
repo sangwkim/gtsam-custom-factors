@@ -61,6 +61,6 @@ This manual assumes using the conda environment with Python 3.8.5, but you can u
   make python-install
   ```
 
-## DOCUMENTATION
+## Further details
 
 For instruction on how to use this template, please refer to the [tutorial](TUTORIAL.md) and also https://dongjing3309.github.io/files/gtsam-tutorial.pdf.
