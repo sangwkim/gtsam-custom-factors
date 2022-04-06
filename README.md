@@ -63,4 +63,4 @@ This manual assumes using the conda environment with Python 3.8.5, but you can u
 
 ## Further details
 
-For instruction on how to use this template, please refer to the [tutorial](TUTORIAL.md) and also https://dongjing3309.github.io/files/gtsam-tutorial.pdf.
+For instruction on how to use this template, please refer to the [tutorial](TUTORIAL.md) and also https://dongjing3309.github.io/files/gtsam-tutorial.pdf. For brief explanation about each custom factor, please refer to the [FACTORS.md](FACTORS.md)
