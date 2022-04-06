@@ -1,29 +1,66 @@
-# gtsam-project-python
+# gtsam-custom-factors
 
-Project template using GTSAM + Python wrapping
+The library including the custom factors.
 
-## PREREQUISITES
+## Setup Manual
 
-- Python 3.6+ is required, since we support these versions.
-- To install the wrap package via `GTSAM`:
+This manual assumes using the conda environment with Python 3.8.5, but you can use another environment or Python version (>=3.6). If you are using another environment, some details might be different.
 
-  - Set the CMake flag `GTSAM_BUILD_PYTHON` to `ON` to enable building the Pybind11 wrapper.
-  - Set the CMake flag `GTSAM_PYTHON_VERSION` to `3.x` (e.g. `3.7`), otherwise the default interpreter will be used.
-  - You can do this on the command line as follows:
+- Setup the conda environment
 
-    ```sh
-    cmake -DGTSAM_BUILD_PYTHON=ON -DGTSAM_PYTHON_VERSION=3.7 ..
-    ```
-- Alternatively, you can install the wrap package directly from the [repo](https://github.com/borglab/wrap), but you will still need to install `GTSAM`.
+  ```   
+  conda create -n "gtsam" python=3.8.5
+  conda activate gtsam
+  conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+  ```
+  
+- Install prerequisites for the GTSAM library
 
-## INSTALL
+  ```
+  sudo apt-get install libboost-all-dev
+  sudo apt-get install cmake
+  sudo ldconfig
+  ```
+  
+  If you face a cmake version related error later, you might have to remove the current cmake and reinstall a new version of cmake (!be careful to do this if you are using ROS!, since it can break your ROS setup. In that case, please refer to: https://answers.ros.org/question/293119/how-can-i-updateremove-cmake-without-partially-deleting-my-ros-distribution/)
+  
+  ```
+  sudo apt remove cmake
+  sudo apt autoremove
+  (Download a new version of cmake eg. 3.22.2)
+  cd Downloads/
+  sudo cp cmake-3.22.2-linux-x86_64.sh /opt/
+  chmod +x /opt/cmake-3.22.2-linux-x86_64.sh 
+  sudo bash /opt/cmake-3.22.2-linux-x86_64.sh
+  ```
+  
+- Install GTSAM
 
-- In the top-level directory, create the `build` directory and `cd` into it.
-- Run `cmake ..`.
-- Run `make`, and the wrapped module will be installed to the `python` directory in the top-level.
-- To install the wrapped module, simply run `make python-install`.
-- You can also run `python main.py` which calls the wrapped module, to get a flavor of how it works.
+  ```
+  git clone https://github.com/borglab/gtsam.git
+  git checkout 69a3a75
+  cd gtsam
+  pip install -r python/requirements.txt 
+  mkdir build
+  cd build
+  cmake .. -DGTSAM_PYTHON_VERSION=3.8 -DGTSAM_BUILD_PYTHON=1 -DCMAKE_INSTALL_PREFIX="./install"
+  make
+  make install
+  make python-install
+  ```
+  
+- Install custom factors
+
+  ```
+  git clone https://github.com/sangwkim/gtsam-custom-factors.git
+  cd gtsam-custom-factors
+  mkdir build
+  cd build
+  cmake .. -DCMAKE_PREFIX_PATH="/home/sangwoon/github/gtsam/build/install"
+  make
+  make python-install
+  ```
 
 ## DOCUMENTATION
 
-For more detailed information, please refer to the [tutorial](TUTORIAL.md).
+For instruction on how to use this template, please refer to the [tutorial](TUTORIAL.md).
