@@ -17,6 +17,9 @@
 // See gtsam.h for full documentation and more examples.
 
 #include <cpp/greeting.h>
+#include <cpp/IDeformFactor.h>
+#include <cpp/NOCFactor.h>
+#include <cpp/FTLineFactor.h>
 #include <cpp/BetweenFactorPose3_.h>
 #include <cpp/InequalityFactor.h>
 #include <cpp/StiffnessFactor.h>
@@ -54,6 +57,20 @@
 // The namespace should be the same as in the c++ source code.
 namespace gtsam_packing {
 
+virtual class IDeformFactor : gtsam::NoiseModelFactor {
+  IDeformFactor(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, size_t key6,
+    const gtsam::noiseModel::Base* model);
+};
+
+virtual class NOCFactor : gtsam::NoiseModelFactor {
+  NOCFactor(size_t key1, size_t key2, size_t key3,
+    const gtsam::noiseModel::Base* model);
+};
+
+virtual class FTLineFactor : gtsam::NoiseModelFactor {
+  FTLineFactor(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5,
+    const gtsam::noiseModel::Base* model, bool zeroJac);
+};
 
 virtual class BetweenFactorPose3_ : gtsam::NoiseModelFactor {
   BetweenFactorPose3_(size_t key1, size_t key2, gtsam::Pose3 p,
