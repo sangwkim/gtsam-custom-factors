@@ -17,13 +17,22 @@
 // See gtsam.h for full documentation and more examples.
 
 #include <cpp/greeting.h>
+#include <cpp/TangentialForce.h>
+#include <cpp/MinimumForceEnergy.h>
+#include <cpp/MinimumForce.h>
+#include <cpp/MinEnergyFactor.h>
+#include <cpp/MinForceFactor.h>
 #include <cpp/IDeformFactor.h>
 #include <cpp/NOCFactor.h>
 #include <cpp/FTLineFactor.h>
 #include <cpp/BetweenFactorPose3_.h>
 #include <cpp/InequalityFactor.h>
 #include <cpp/StiffnessFactor.h>
+#include <cpp/StiffnessFactor2.h>
+#include <cpp/StiffnessFactor3.h>
 #include <cpp/StiffnessRatioFactor.h>
+#include <cpp/StiffnessRatioFactor2.h>
+#include <cpp/StiffnessRatioFactor3.h>
 #include <cpp/CoulombFactor.h>
 #include <cpp/CoulombFactor2.h>
 #include <cpp/EnergyWOFFactor.h>
@@ -41,6 +50,7 @@
 #include <cpp/StickingContactFactor_3D.h>
 #include <cpp/TactileTransformFactor.h>
 #include <cpp/TactileTransformFactor_3D.h>
+#include <cpp/TactileTransformFactor_3D_nonlinear.h>
 #include <cpp/ContactPlaneFactor.h>
 #include <cpp/ContactPlaneFactor_3D.h>
 #include <cpp/PhysicsFactor.h>
@@ -56,6 +66,26 @@
 
 // The namespace should be the same as in the c++ source code.
 namespace gtsam_packing {
+
+virtual class TangentialForce : gtsam::NoiseModelFactor {
+  TangentialForce(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, double cost_sigma);
+};
+
+virtual class MinimumForceEnergy : gtsam::NoiseModelFactor {
+  MinimumForceEnergy(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, int ForceorEnergy, double cost_sigma, double eps);
+};
+
+virtual class MinimumForce : gtsam::NoiseModelFactor {
+  MinimumForce(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, double cost_sigma, double eps, double d_opt);
+};
+
+virtual class MinEnergyFactor : gtsam::NoiseModelFactor {
+  MinEnergyFactor(size_t key1, size_t key2, size_t key3, size_t key4, double cost_sigma, double eps);
+};
+
+virtual class MinForceFactor : gtsam::NoiseModelFactor {
+  MinForceFactor(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, double cost_sigma, double eps);
+};
 
 virtual class IDeformFactor : gtsam::NoiseModelFactor {
   IDeformFactor(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, size_t key6,
@@ -86,8 +116,28 @@ virtual class StiffnessFactor : gtsam::NoiseModelFactor {
   StiffnessFactor(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, bool zeroJac);
 };
 
+virtual class StiffnessFactor2 : gtsam::NoiseModelFactor {
+  StiffnessFactor2(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, bool zeroJac);
+};
+
+virtual class StiffnessFactor3 : gtsam::NoiseModelFactor {
+  StiffnessFactor3(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, bool zeroJac);
+};
+
 virtual class StiffnessRatioFactor : gtsam::NoiseModelFactor {
   StiffnessRatioFactor(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, size_t key6,
+    const gtsam::Vector6& v_nominal,
+    const gtsam::noiseModel::Base* model);
+};
+
+virtual class StiffnessRatioFactor2 : gtsam::NoiseModelFactor {
+  StiffnessRatioFactor2(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, size_t key6,
+    const gtsam::Vector6& v_nominal,
+    const gtsam::noiseModel::Base* model);
+};
+
+virtual class StiffnessRatioFactor3 : gtsam::NoiseModelFactor {
+  StiffnessRatioFactor3(size_t key1, size_t key2, size_t key3, size_t key4, size_t key5, size_t key6,
     const gtsam::Vector6& v_nominal,
     const gtsam::noiseModel::Base* model);
 };
@@ -191,6 +241,11 @@ virtual class TactileTransformFactor : gtsam::NoiseModelFactor {
 virtual class TactileTransformFactor_3D : gtsam::NoiseModelFactor {
   TactileTransformFactor_3D(size_t key1, size_t key2, size_t key3, size_t key4,
     const gtsam::Pose3& m, const gtsam::noiseModel::Base* model, bool zeroJac);
+};
+
+virtual class TactileTransformFactor_3D_nonlinear : gtsam::NoiseModelFactor {
+  TactileTransformFactor_3D_nonlinear(size_t key1, size_t key2, size_t key3, size_t key4,
+    const gtsam::Vector6 k, const gtsam::Vector6 alpha);
 };
 
 virtual class ContactPlaneFactor : gtsam::NoiseModelFactor {

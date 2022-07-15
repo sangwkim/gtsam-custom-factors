@@ -17,7 +17,7 @@ Pose3: C(i)
 Vector6: Compliance
 */
 
-class StiffnessRatioFactor: public gtsam::NoiseModelFactor6<gtsam::Pose3, gtsam::Pose3, gtsam::Pose3, gtsam::Pose3, gtsam::Pose3, gtsam::Vector6> {
+class StiffnessRatioFactor2: public gtsam::NoiseModelFactor6<gtsam::Pose3, gtsam::Pose3, gtsam::Pose3, gtsam::Pose3, gtsam::Pose3, gtsam::Vector6> {
 
 private:
 
@@ -25,7 +25,7 @@ private:
 
 public:
 
-  StiffnessRatioFactor(gtsam::Key key1, gtsam::Key key2, gtsam::Key key3, gtsam::Key key4, gtsam::Key key5, gtsam::Key key6,
+  StiffnessRatioFactor2(gtsam::Key key1, gtsam::Key key2, gtsam::Key key3, gtsam::Key key4, gtsam::Key key5, gtsam::Key key6,
     const gtsam::Vector6 v_nominal, gtsam::SharedNoiseModel model) :
       gtsam::NoiseModelFactor6<gtsam::Pose3, gtsam::Pose3, gtsam::Pose3, gtsam::Pose3, gtsam::Pose3, gtsam::Vector6>(model, key1, key2, key3, key4, key5, key6),
       v_(v_nominal) {}
@@ -55,16 +55,16 @@ public:
 
       typename gtsam::traits<gtsam::Pose3>::ChartJacobian::Jacobian Hlm;
       gtsam::Vector lm = gtsam::traits<gtsam::Pose3>::Logmap(hx,&Hlm);
-      
-      gtsam::Vector k = (gtsam::Vector6() << 1/v[0]/v[0], 1/v[1]/v[1], 1/v[2]/v[2], 1/v[3]/v[3], 1/v[4]/v[4], 1/v[5]/v[5]).finished();
-      gtsam::Vector k_ = (gtsam::Vector6() << 1/v_[0]/v_[0], 1/v_[1]/v_[1], 1/v_[2]/v_[2], 1/v_[3]/v_[3], 1/v_[4]/v_[4], 1/v_[5]/v_[5]).finished();
+
+      gtsam::Vector k = (gtsam::Vector6() << 1/v[0]/v[0], v[1]/v[0]/v[0], v[2]/v[0]/v[0], v[3]/v[5]/v[5], v[4]/v[5]/v[5], 1/v[5]/v[5]).finished();
+      gtsam::Vector k_ = (gtsam::Vector6() << 1/v_[0]/v_[0], v_[1]/v_[0]/v_[0], v_[2]/v_[0]/v_[0], v_[3]/v_[5]/v_[5], v_[4]/v_[5]/v_[5], 1/v_[5]/v_[5]).finished();
 
       gtsam::Matrix Hk = (gtsam::Matrix66() << -2/pow(v[0],3), 0, 0, 0, 0, 0,
-        0, -2/pow(v[1],3), 0, 0, 0, 0,
-        0, 0, -2/pow(v[2],3), 0, 0, 0,
-        0, 0, 0, -2/pow(v[3],3), 0, 0,
-        0, 0, 0, 0, -2/pow(v[4],3), 0,
-        0, 0, 0, 0, 0, -2/pow(v[5],3)).finished();
+                                               -2*v[1]/pow(v[0],3), 1/pow(v[0],2), 0, 0, 0, 0,
+                                               -2*v[2]/pow(v[0],3), 0, 1/pow(v[0],2), 0, 0, 0,
+                                               0, 0, 0, 1/pow(v[5],2), 0, -2*v[3]/pow(v[5],3),
+                                               0, 0, 0, 0, 1/pow(v[5],2), -2*v[4]/pow(v[5],3),
+                                               0, 0, 0, 0, 0, -2/pow(v[5],3)).finished();
 
       gtsam::Matrix Hlm_ = (gtsam::Matrix46() << k[0], 0, 0, 0, k[4]*p45t.z(), -k[5]*p45t.y(),
                                                  0, k[1], 0, -k[3]*p45t.z(), 0, k[5]*p45t.x(),
@@ -95,27 +95,6 @@ public:
         k[0]*k[1]*k[2]*k[3]*k[4]*k[5]/(k_[0]*k_[1]*k_[2]*k_[3]*k_[4]*k_[5]) - 1
         ).finished();
       
-      /*
-      *H1 = gtsam::Matrix46::Zero();
-      *H2 = gtsam::Matrix46::Zero();
-      *H3 = gtsam::Matrix46::Zero();
-      *H4 = gtsam::Matrix46::Zero();
-      *H5 = gtsam::Matrix46::Zero();
-      *H6 = (gtsam::Matrix46() <<
-        -lm[0], 0, 0, 0, lm[4]*p45t.z(), -lm[5]*p45t.y(),
-        0, -lm[1], 0, -lm[3]*p45t.z(), 0, lm[5]*p45t.x(),
-        0, 0, -lm[2], lm[3]*p45t.y(), -lm[4]*p45t.x(), 0,
-        v[1]*v[2]*v[3]*v[4]*v[5], v[0]*v[2]*v[3]*v[4]*v[5], v[0]*v[1]*v[3]*v[4]*v[5], v[0]*v[1]*v[2]*v[4]*v[5], v[0]*v[1]*v[2]*v[3]*v[5], v[0]*v[1]*v[2]*v[3]*v[4]
-        ).finished();
-
-      return (gtsam::Vector4() << 
-        - v[0]*lm[0] - v[5]*lm[5]*p45t.y() + v[4]*lm[4]*p45t.z(),
-        - v[1]*lm[1] - v[3]*lm[3]*p45t.z() + v[5]*lm[5]*p45t.x(),
-        - v[2]*lm[2] - v[4]*lm[4]*p45t.x() + v[3]*lm[3]*p45t.y(),
-        v[0]*v[1]*v[2]*v[3]*v[4]*v[5] - v_[0]*v_[1]*v_[2]*v_[3]*v_[4]*v_[5]
-        ).finished();
-      */      
-
   }
 
   /** number of variables attached to this factor */
@@ -123,6 +102,6 @@ public:
     return 6;
   }
 
-}; // \class StiffnessRatioFactor
+}; // \class StiffnessRatioFactor2
 
 } /// namespace gtsam_packing
